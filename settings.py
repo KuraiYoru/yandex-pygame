@@ -1,7 +1,7 @@
 import ctypes
 
 
-WIDTH, HEIGHT = tuple(map(lambda x: ctypes.windll.user32.GetSystemMetrics(x) // 2, (0, 1)))
+WIDTH, HEIGHT = tuple(map(lambda x: ctypes.windll.user32.GetSystemMetrics(x), (0, 1)))
 FPS = 60
 TILESIZE = 64
 

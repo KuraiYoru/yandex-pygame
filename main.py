@@ -7,6 +7,7 @@ from settings import *
 from level import Level
 # from camera import *
 from enemies import Enemy
+from menu import menu
 
 
 
@@ -20,7 +21,7 @@ class Game:
 
         pygame.mixer.init()
         mixer.init()
-        mixer.music.load('music/stranger-things-124008.mp3')
+        mixer.music.load('music/song18.mp3')
         mixer.music.set_volume(0.2)
         mixer.music.play(-1)
 
@@ -87,4 +88,4 @@ class Game:
 
 if __name__ == '__main__':
     game = Game()
-    game.run()
+    menu(game.run, game.screen)
