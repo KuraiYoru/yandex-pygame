@@ -19,7 +19,7 @@ class Bar(pygame.sprite.Sprite):
         self.hero = hero
 
     def update(self):
-        num = int((len(self.sprites) - 1) * self.hero.hp / self.hero.max_hp)
+        num = int((len(self.sprites) - 1) * self.hero.hp / self.hero.max_hp) # смена полоски здоровья в зависимости от здоровья
         self.image = self.sprites[num]
 
 

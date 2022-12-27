@@ -10,7 +10,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y, enemies, enemy_lst, all_sprites):
+    def __init__(self, x, y, enemies, enemy_lst, all_sprites): # x y - положение , enemies - группа спрайтов врагов, enemy_llst - лист врагов питоновский, группа всех спрайтов
         pygame.sprite.Sprite.__init__(self)
         self.facing = 0
         self.animation_list = []
@@ -36,7 +36,7 @@ class Enemy(pygame.sprite.Sprite):
     def updater(self, direction_x, direction_y):
 
         if not self.facing:
-            self.image = pygame.transform.flip(self.animation_list[self.action][self.frame_index], True, False)
+            self.image = pygame.transform.flip(self.animation_list[self.action][self.frame_index], True, False) # смена кадров анимации
             self.image.set_colorkey(BLACK)
         else:
             self.image = self.animation_list[self.action][self.frame_index]
@@ -53,7 +53,7 @@ class Enemy(pygame.sprite.Sprite):
                             del self.enemy_lst[i]
                             break
 
-        if self.action != 2 and self.moving:
+        if self.action != 2 and self.moving:  # движение врагов
             x_diff = direction_x - self.rect.x
             y_diff = direction_y - self.rect.y
 
@@ -98,8 +98,9 @@ class Golem(Enemy):
         self.strike_laser = False
 
     def updater(self, direction_x, direction_y):
-        super().updater(direction_x, direction_y)
-        if pygame.time.get_ticks() - self.laser_time >= 5000 and self.action != 2 and not self.shooting:
+        super().updater(direction_x, direction_y) # наследование движения и анимации
+
+        if pygame.time.get_ticks() - self.laser_time >= 5000 and self.action != 2 and not self.shooting: # лазер
             self.shooting = False
             self.moving = False
             self.laser_time = pygame.time.get_ticks()
@@ -125,7 +126,7 @@ class Golem(Enemy):
             self.strike_laser = False
 
 
-        if pygame.time.get_ticks() - self.shoot_time >= 1500 and self.action != 2 and not self.laser and not self.strike_laser:
+        if pygame.time.get_ticks() - self.shoot_time >= 1500 and self.action != 2 and not self.laser and not self.strike_laser: # стрельба
             self.shooting = True
             self.moving = False
             self.laser = False
@@ -140,7 +141,7 @@ class Golem(Enemy):
             self.frame_index = 0
 
 
-    def shoot(self, vel, direction_x, direction_y, sprite_list, bullets_type):
+    def shoot(self, vel, direction_x, direction_y, sprite_list, bullets_type): # функция стрельбы
         if not self.facing:
             bullet = Projectile(vel, self.rect.x, self.rect.y + self.rect.y * 0.1, direction_x, direction_y - self.rect.y * 0.1, sprite_list)
         else:
@@ -149,7 +150,7 @@ class Golem(Enemy):
         bullets_type.add(bullet)
         return bullet
 
-    def shoot_laser(self, vel, direction_x, direction_y, sprite_list, bullets_type):
+    def shoot_laser(self, vel, direction_x, direction_y, sprite_list, bullets_type): # функция стрельбы лазером
         # bullet = Projectile(vel, self.rect.x, self.rect.y, direction_x, direction_y, sprite_list)
         bullet = Projectile(vel, self.rect.x, self.rect.y + self.rect.y * 0.1, direction_x, direction_y, sprite_list)
         bullets_type.add(bullet)
@@ -184,7 +185,7 @@ show_idle1 = spritesheet.Spritesheet(sprite_sheet_idle1)
 idle_1_list = spritesheet.get_animation(show_idle1, 32, 32, BLACK, 7, 4, 2)
 
 # Sprites for golem
-sprite_sheet_idle = pygame.image.load('sprites/Golem1.png').convert_alpha()
+sprite_sheet_idle = pygame.image.load('sprites/Golem1.png').convert_alpha() # пример создания типа анимации бег, стрельба и тд
 show_idle = spritesheet.Spritesheet(sprite_sheet_idle)
 idle_list = spritesheet.get_animation(show_idle, 54, 50, BLACK, 4, 6, 0)
 
@@ -216,7 +217,7 @@ laser_strike = spritesheet.get_animation(laser_go, 272, 48, (255, 255, 255), 6, 
 
 
 
-golem_lst = []
+golem_lst = []  # добавление всей анимации
 golem_lst.append(idle_list)
 golem_lst.append(idle_list)
 golem_lst.append(die_list)

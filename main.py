@@ -5,7 +5,7 @@ import sys
 from pygame import mixer
 from settings import *
 from level import Level
-# from camera import *
+
 from enemies import Enemy
 from menu import menu
 
@@ -22,7 +22,7 @@ class Game:
         pygame.mixer.init()
         mixer.init()
         mixer.music.load('music/song18.mp3')
-        mixer.music.set_volume(0.2)
+        mixer.music.set_volume(0.3)
         mixer.music.play(-1)
 
         self.clock = pygame.time.Clock()
@@ -45,7 +45,7 @@ class Game:
         # self.camera.setmethod(follow)
 
 
-    def run(self):
+    def run(self): # основной цикл игры
         i = 0
         shooting = False
 
@@ -69,7 +69,7 @@ class Game:
             if self.level.hero.hp <= 0:
                 sys.exit()
 
-            self.screen.blit(self.bg, (0, i))
+            self.screen.blit(self.bg, (0, i)) # движение заднего фона
             self.screen.blit(self.bg, (0, HEIGHT + i))
             if i == -HEIGHT:
                 self.screen.blit(self.bg, (0, HEIGHT+i))
@@ -84,6 +84,10 @@ class Game:
             # self.all_sprites.draw(self.screen)
 
             pygame.display.flip()
+
+    def run_menu(self):
+        pass
+
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@ from settings import *
 
 
 class Projectile(pygame.sprite.Sprite):
-    def __init__(self, vel, x, y, direction_x, direction_y, sprite_list=None, rotate=360):
+    def __init__(self, vel, x, y, direction_x, direction_y, sprite_list=None, rotate=360): # скорость, координаты, направление полета по координатам, спрайт для пуль, поворот спрайта пули
         pygame.sprite.Sprite.__init__(self)
         self.lst = sprite_list[::]
         if self.lst is not None:
@@ -48,6 +48,7 @@ class Projectile(pygame.sprite.Sprite):
         # bullet.y += bullet.vel * math.sin(angle)
 
     def update(self):
+        # анимация пули
         if self.lst is not None:
             animation_cooldown = 100
             self.image = self.lst[self.frame_index]
@@ -56,12 +57,9 @@ class Projectile(pygame.sprite.Sprite):
                 self.frame_index += 1
                 if self.frame_index >= len(self.lst):
                     self.frame_index = 0
-
+        # полет пули
         self.float_y += self.change_y
         self.float_x += self.change_x
 
         self.rect.x = int(self.float_x)
         self.rect.y = int(self.float_y)
-
-        # if self.rect.x < 0 or self.rect.x > WIDTH or self.rect.y < 0 or self.rect.y > HEIGHT:
-        #     self.kill()

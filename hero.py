@@ -8,7 +8,7 @@ BLACK = (0, 0, 0)
 pygame.init()
 
 class Hero(pygame.sprite.Sprite):
-    def __init__(self, speedx, speedy, facing, all_sprites, bullets, tiles, x, y, aim):
+    def __init__(self, speedx, speedy, facing, all_sprites, bullets, tiles, x, y, aim): # скорость по иксу, скорость по игрику, направление спрайта (лево право), все спрайты отрисовки, группа пуль, группа блоков, координаты, класс прицела
         pygame.sprite.Sprite.__init__(self)
         self.speedx = speedx
         self.speedy = speedy
@@ -37,8 +37,8 @@ class Hero(pygame.sprite.Sprite):
 
 
     def update(self):
-        animation_cooldown = 100
-        if not self.facing:
+        animation_cooldown = 100 # чкорость смены кадров
+        if not self.facing: # анимация
             self.image = pygame.transform.flip(self.animation_list[self.action][self.frame_index], True, False)
             self.image.set_colorkey(BLACK)
         else:
@@ -55,12 +55,12 @@ class Hero(pygame.sprite.Sprite):
         # if pygame.sprite.spritecollide(hero, self.level.visible_sprites, False):
         #     pygame.sprite.spritecollide(hero, self.level.visible_sprites, False)
 
-        if btn[pygame.K_a]:
+        if btn[pygame.K_a]: # движение от нажатой кнопки
             self.rect.x -= self.speedx
             self.action = 1
             self.facing = 0
             self.help_x -= self.speedx
-            if pygame.sprite.spritecollide(self, self.tiles, False):
+            if pygame.sprite.spritecollide(self, self.tiles, False): # отталкивание от блоков
                 self.rect.x += self.speedx
                 self.help_x += self.speedx
         if btn[pygame.K_d]:
@@ -86,12 +86,12 @@ class Hero(pygame.sprite.Sprite):
                 self.rect.y -= self.speedy
                 self.help_y -= self.speedy
 
-        if pygame.mouse.get_pressed()[0]:
+        if pygame.mouse.get_pressed()[0]: # стрельба
             if pygame.time.get_ticks() - self.shoot_time >= 250:
                 self.shoot(self.all_sprites, self.bullets)
                 self.shoot_time = pygame.time.get_ticks()
 
-    def shoot(self, group_of_sprite, bullets_sprite):
+    def shoot(self, group_of_sprite, bullets_sprite): # функция стрельбы
         if self.facing:
             bullet = Projectile(10, self.rect.x + self.rect.w * 0.9, self.rect.y,
                                 self.aim.rect.x + self.help_x - self.aim.rect.x * 0.02, self.aim.rect.y + self.help_y -
@@ -106,7 +106,7 @@ class Hero(pygame.sprite.Sprite):
 
 class Aim(pygame.sprite.Sprite):
 
-    def __init__(self, x, y):
+    def __init__(self, x, y): # координаты прицела
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('sprites/target_20.png').convert_alpha()
         self.rect = self.image.get_rect()
@@ -114,7 +114,7 @@ class Aim(pygame.sprite.Sprite):
         self.image.set_colorkey(BLACK)
         self.x, self.y = x, y
 
-    def update(self):
+    def update(self): # обновление расположения прицела
         pos = pygame.mouse.get_pos()
         self.rect.x = pos[0] - 20 + self.x
         self.rect.y = pos[1] - 20 + self.y
@@ -124,7 +124,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 sprite_sheet_idle = pygame.image.load('sprites/mage.png').convert_alpha()
 sprite_sheet_walk = pygame.image.load('sprites/mage.png').convert_alpha()
 
-
+# анимация героя
 show_idle = spritesheet.Spritesheet(sprite_sheet_idle)
 show_walk = spritesheet.Spritesheet(sprite_sheet_walk)
 
@@ -133,7 +133,7 @@ walk_list = spritesheet.get_animation(show_walk, 64, 128, BLACK, 9, 1, 0)
 bullets = pygame.sprite.Group()
 
 fire_bullet = []
-for i in range(12):
+for i in range(12): # анимация пулек
     img = pygame.image.load(f"sprites/fire/{i}-PhotoRoom.png")
     img = pygame.transform.scale(img, (img.get_rect()[2] * 0.15, img.get_rect()[3] * 0.15))
     img.set_colorkey(BLACK)
