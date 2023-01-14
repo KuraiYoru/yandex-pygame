@@ -7,8 +7,6 @@ from helth_bar import Bar
 from enemies import Enemy, Golem
 
 
-
-
 class Level:
     def __init__(self, screen):
 
@@ -27,12 +25,8 @@ class Level:
         self.enemies_lst = []
         self.hero_group = pygame.sprite.Group() # группа героя
         self.golem_bullets = pygame.sprite.Group()#  группа вражеских пуль
-        self.laser = pygame.sprite.Group()# группа для лазера
         self.create_map()
         self.screen = screen
-
-
-
 
     def run(self):
         self.visible_sprites.update()
@@ -51,14 +45,9 @@ class Level:
         for i in self.enemies_lst:
             i.updater(self.hero.rect.x + self.hero.rect.width // 2, self.hero.rect.y + self.hero.rect.height // 2)
 
-
         self.visible_sprites.custom_draw(self.hero)
         self.bar.update()
         self.bar.draw(WIDTH * 0.01, HEIGHT * 0.01, self.screen)
-
-
-        # self.all_sprites.update()
-        # self.all_sprites.draw(self.screen)
 
 
     def create_map(self):
@@ -85,8 +74,8 @@ class Level:
                     self.visible_sprites.add(self.hero)
                     self.bar = Bar(self.hero)
                     self.hero_group.add(self.hero)
-                elif col == 'e': # создание врага
-                    self.enemy = Golem(x + 100, y + 100, self.enemies, self.enemies_lst, self.visible_sprites, self.golem_bullets, self.laser)
+                elif col.isdigit(): # создание врага
+                    self.enemy = Golem(x + 100, y + 100, 1.5, self.enemies, self.enemies_lst, self.visible_sprites, self.golem_bullets, self.tiles)
 
 
 class Camera(pygame.sprite.Group):

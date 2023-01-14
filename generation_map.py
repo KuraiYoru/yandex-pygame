@@ -1,4 +1,22 @@
 import random
+import sys
+
+
+def give_mob_coords(game_map: list, mob_size: int) -> tuple:
+    while True:
+        continue_condition = False
+        x, y = random.randint(mob_size, len(game_map) - mob_size - 1), random.randint(mob_size,
+                                                                                      len(game_map) - mob_size - 1)
+        if game_map[x][y] == '.':
+            for i in range(-mob_size, mob_size + 1, 1):
+                for j in range(-mob_size, mob_size + 1, 1):
+                    if game_map[x + i][y + j] != '.':
+                        continue_condition = True
+                        break
+                if continue_condition:
+                    break
+            if not continue_condition:
+                return (x, y)
 
 
 class Pair:
@@ -35,11 +53,19 @@ class Map:
             if leaf.halls.__len__() > 0:
                 for i in range(leaf.halls[0][0], leaf.halls[0][0] + leaf.halls[0][2]):
                     for j in range(leaf.halls[0][1], leaf.halls[0][1] + leaf.halls[0][3]):
-                        self.map[i][j] = '.'
+                        try:
+                            self.map[i][j] = '.'
+                        except IndexError:
+                            print(i, j, 'len > 0')
+                            sys.exit()
                 if leaf.halls.__len__() == 2:
                     for i in range(leaf.halls[1][0], leaf.halls[1][0] + leaf.halls[1][2]):
                         for j in range(leaf.halls[1][1], leaf.halls[1][1] + leaf.halls[1][3]):
-                            self.map[i][j] = '.'
+                            try:
+                                self.map[i][j] = '.'
+                            except IndexError:
+                                print(i, j, 'len == 2')
+                                sys.exit()
             if leaf.rightChild is not None or leaf.leftChild is not None:
                 continue
             for i in range(leaf.x + leaf.roomPos[0] + 1, leaf.x + leaf.roomPos[0] + leaf.roomSize[0]):
@@ -49,10 +75,11 @@ class Map:
         f = True
         for i in range(self.map.__len__()):
             for j in range(self.map[i].__len__()):
-                if self.map[i][j] == '.' and self.map[i + 1][j] == '.' and self.map[i -1][j] == '.' \
-                    and self.map[i][j - 1] == '.' and self.map[i + 1][j - 1] == '.' and self.map[i - 1][j - 1] == '.' and \
-                        self.map[i + 1][j + 1] == '.' and self.map[i - 1][j + 1] == '.' and self.map[i][j + 1] == '.'\
-                        and self.map[i][j - 2] == '.' and self.map[i][j - 3] == '.'\
+                if self.map[i][j] == '.' and self.map[i + 1][j] == '.' and self.map[i - 1][j] == '.' \
+                        and self.map[i][j - 1] == '.' and self.map[i + 1][j - 1] == '.' and self.map[i - 1][
+                    j - 1] == '.' and \
+                        self.map[i + 1][j + 1] == '.' and self.map[i - 1][j + 1] == '.' and self.map[i][j + 1] == '.' \
+                        and self.map[i][j - 2] == '.' and self.map[i][j - 3] == '.' \
                         and self.map[i][j + 2] == '.' and self.map[i][j + 3] == '.' \
                         and self.map[i - 2][j] == '.' and self.map[i - 3][j] == '.' \
                         and self.map[i + 2][j] == '.' and self.map[i + 3][j] == '.':
@@ -62,15 +89,23 @@ class Map:
             if not f:
                 break
 
+        # for i in range(3):
+        #     x, y = give_mob_coords(self.map, 1)
+        #     self.map[x][y] = '1'
+        #
+        # for i in range(2):
+        #     x, y = give_mob_coords(self.map, 2)
+        #     self.map[x][y] = '2'
+
+        x, y = give_mob_coords(self.map, 3)
+        self.map[x][y] = '3'
 
         with open('map.txt', 'w') as file:
             for i in self.map:
                 file.write(''.join(i) + '\n')
 
-        for i in self.map:
-            print(i)
-
-
+        # for i in self.map:
+        #     print(''.join(i))
 
 
 class Leaf:

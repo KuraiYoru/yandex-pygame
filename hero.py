@@ -2,7 +2,6 @@ import pygame
 from settings import *
 import spritesheet
 from projectile import Projectile
-import math
 
 BLACK = (0, 0, 0)
 pygame.init()
@@ -52,8 +51,6 @@ class Hero(pygame.sprite.Sprite):
 
         btn = pygame.key.get_pressed()
 
-        # if pygame.sprite.spritecollide(hero, self.level.visible_sprites, False):
-        #     pygame.sprite.spritecollide(hero, self.level.visible_sprites, False)
 
         if btn[pygame.K_a]: # движение от нажатой кнопки
             self.rect.x -= self.speedx

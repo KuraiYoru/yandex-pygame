@@ -1,13 +1,10 @@
-import random
-
 import pygame
 import sys
 from pygame import mixer
 from settings import *
 from level import Level
 
-from enemies import Enemy
-from menu import menu
+from menu import Menu
 
 
 
@@ -15,7 +12,6 @@ BLACK = (0, 0, 0)
 # TEST
 class Game:
     def __init__(self):
-
 
         pygame.init()
 
@@ -39,57 +35,65 @@ class Game:
         self.level = Level(self.screen)
         self.level.visible_sprites.add()
         self.shoot_time = pygame.time.get_ticks()
-
-        # self.camera = Camera(self.level.hero)
-        # follow = Follow(self.camera, self.level.hero)
-        # self.camera.setmethod(follow)
+        self.enemies = self.level.enemies
 
 
     def run(self): # основной цикл игры
         i = 0
-        shooting = False
+        paused = False
 
         while True:
-            self.clock.tick(FPS)
-            self.screen.fill((50, 50, 50))
-
-            # TEST
+            if len(self.enemies) == 0:
+                start("You win!")
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                     sys.exit()
-                # if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                #     enemy = Enemy(self.level.hero.rect.x, self.level.hero.rect.y, self.level.enemies, self.level.enemies_lst)
-                #     self.level.visible_sprites.add(enemy)
-                #     self.level.enemies.add(enemy)
-                #     self.level.enemies_lst.append(enemy)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    if paused:
+                        paused = False
+                    else:
+                        paused = True
 
             if self.level.hero.hp <= 0:
-                sys.exit()
+                start("You lose!")
 
-            self.screen.blit(self.bg, (0, i)) # движение заднего фона
-            self.screen.blit(self.bg, (0, HEIGHT + i))
-            if i == -HEIGHT:
-                self.screen.blit(self.bg, (0, HEIGHT+i))
-                i = 0
-            i -= 1
-            self.level.run()
+            if not paused:
+                self.clock.tick(FPS)
+                self.screen.fill((50, 50, 50))
+                self.screen.blit(self.bg, (0, i))  # движение заднего фона
+                self.screen.blit(self.bg, (0, HEIGHT + i))
+                if i == -HEIGHT:
+                    self.screen.blit(self.bg, (0, HEIGHT + i))
+                    i = 0
+                i -= 1
+
+                self.level.run()
 
 
-            # self.camera.scroll()
-            # pygame.sprite.groupcollide(mobs, bullets, True, True)
-
-            # self.all_sprites.draw(self.screen)
-
-            pygame.display.flip()
+                pygame.display.flip()
+            else:
+                font = pygame.font.Font(None, 128)
+                text = font.render("GAME PAUSED!", True, (15, 144, 182))
+                text_x = WIDTH // 2 - text.get_width() // 2
+                text_y = HEIGHT // 2 - text.get_height() // 2
+                text_w = text.get_width()
+                text_h = text.get_height()
+                self.screen.blit(text, (text_x, text_y))
+                pygame.draw.rect(self.screen, (0, 0, 0), (text_x - 10, text_y - 10,
+                                                       text_w + 20, text_h + 20), 5)
+                pygame.display.flip()
 
     def run_menu(self):
         pass
 
+def start(condition):
+    game = Game()
+    menu = Menu(game.run, game.screen, condition)
+
 
 
 if __name__ == '__main__':
-    game = Game()
-    menu(game.run, game.screen)
+    start('')
