@@ -199,6 +199,9 @@ class Bat(pygame.sprite.Sprite):
             else:
                 self.image = self.animation_list[self.action][self.frame_index]
                 self.image.set_colorkey(BLACK)
+            if self.hp > 100:
+                self.image = pygame.transform.scale(self.image, (self.rect.width * (1 + (self.hp) // 100), self.rect.height * (1 + (self.hp) // 100)))
+                self.image.set_colorkey(BLACK)
             if pygame.time.get_ticks() - self.update_time >= self.animation_cooldown:
                 self.update_time = pygame.time.get_ticks()
                 self.frame_index += 1
@@ -236,10 +239,13 @@ class Bat(pygame.sprite.Sprite):
 
         if pygame.sprite.spritecollide(self, self.hero_group, False):
             self.action = 1
+            self.moving = False
             for i in self.hero_group:
                 i.take_damage(self.damage)
-                self.hp += 2.5
-
+                self.hp += 0.5
+        elif self.action != 2:
+            self.action = 0
+            self.moving = True
 
 
 

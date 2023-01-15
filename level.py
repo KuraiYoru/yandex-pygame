@@ -44,6 +44,7 @@ class Level:
         for i in pygame.sprite.groupcollide(self.bullets, self.enemies, True, False).items(): # урон врагам
             i[1][0].hp -= self.hero.damage
 
+
         for i in self.enemies_lst:
             i.updater(self.hero.rect.x + self.hero.rect.width // 2, self.hero.rect.y + self.hero.rect.height // 2)
 
