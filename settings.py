@@ -1,8 +1,10 @@
 import ctypes
 from generation_map import Map
 
-
-WIDTH, HEIGHT = tuple(map(lambda x: ctypes.windll.user32.GetSystemMetrics(x), (0, 1))) # размер экрана
+try:
+    WIDTH, HEIGHT = tuple(map(lambda x: ctypes.windll.user32.GetSystemMetrics(x), (0, 1))) # размер экрана
+except:
+    WIDTH, HEIGHT = list(map(lambda x: int(x), input("Введите размер экрана в формате **** ****. Example 1920 1080").split()))
 FPS = 60
 TILESIZE = 64  # размер блоков
 x, y = 60, 60

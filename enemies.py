@@ -1,5 +1,3 @@
-import sys
-
 import pygame
 import spritesheet
 import math
@@ -151,7 +149,6 @@ class Gladiator(Enemy):
 
     def updater(self, direction_x, direction_y):
         super().updater(direction_x, direction_y)
-        print(self.moving)
         if pygame.sprite.spritecollide(self, self.hero_group, False):
             self.action = 3
             self.moving = False

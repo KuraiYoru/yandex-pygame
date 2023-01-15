@@ -6,8 +6,6 @@ from level import Level
 
 from menu import Menu
 
-
-
 BLACK = (0, 0, 0)
 # TEST
 class Game:
@@ -29,7 +27,7 @@ class Game:
         bg_img = pygame.image.load('sprites/bg.png').convert_alpha()
         self.bg = pygame.transform.scale(bg_img, (WIDTH, HEIGHT))
 
-        pygame.mouse.set_visible(True)
+
         self.fire = []
 
         self.level = Level(self.screen)
@@ -41,6 +39,7 @@ class Game:
     def run(self): # основной цикл игры
         i = 0
         paused = False
+        pygame.mouse.set_visible(False)
 
         while True:
             if len(self.enemies) == 0:
@@ -91,8 +90,6 @@ def start(condition):
 
     game = Game()
     menu = Menu(game.run, game.screen, condition)
-
-
 
 
 if __name__ == "__main__":
