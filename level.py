@@ -4,7 +4,7 @@ from settings import *
 from tile import Tile
 from hero import Hero, Aim
 from helth_bar import Bar
-from enemies import Golem, Gladiator
+from enemies import Golem, Gladiator, Bat
 
 
 class Level:
@@ -54,6 +54,7 @@ class Level:
 
     def create_map(self):
         self.visible_sprites.add(self.earth)
+        bat_list = []
         for row_index, row in enumerate(self.WORLDMAP):
             for col_index, col in enumerate(row):
                 x = col_index * TILESIZE
@@ -72,7 +73,7 @@ class Level:
                     self.aim.y = self.hero.rect.centery - self.half_height
 
                     # self.all_sprites.add(self.hero)
-                    self.visible_sprites.add(self.aim)
+
                     self.visible_sprites.add(self.hero)
                     self.bar = Bar(self.hero)
                     self.hero_group.add(self.hero)
@@ -80,7 +81,12 @@ class Level:
                     self.enemy = Golem(x + 100, y + 100, 1.5, self.enemies, self.enemies_lst, self.visible_sprites, self.golem_bullets, self.tiles)
                 elif col == '1':
                     self.enemy = Gladiator(x + 100, y + 100, 4, self.enemies, self.enemies_lst, self.visible_sprites, self.tiles, self.hero_group)
-
+                elif col == '2':
+                    self.enemy = Bat(x + 100, y + 100, 4, self.enemies, self.enemies_lst, self.hero_group)
+                    bat_list.append(self.enemy)
+        for i in bat_list:
+            self.visible_sprites.add(i)
+        self.visible_sprites.add(self.aim)
 
 class Camera(pygame.sprite.Group):
     def __init__(self):

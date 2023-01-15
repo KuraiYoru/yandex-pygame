@@ -166,6 +166,83 @@ class Gladiator(Enemy):
             self.moving = True
 
 
+class Bat(pygame.sprite.Sprite):
+    def __init__(self, x, y, vel, enemies, enemy_lst, hero_group):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.facing = 0
+        self.animation_list = bat_list
+        self.action = 0  # 0-idle 1-walk 2-death
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
+        self.image = self.animation_list[self.action][self.frame_index]
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.vel = vel
+        self.float_x = x
+        self.float_y = y
+        self.hp = 100
+        self.enemies = enemies
+        self.enemy_lst = enemy_lst
+        self.enemies.add(self)
+        self.enemy_lst.append(self)
+        self.live = True
+        self.animation_cooldown = 100
+        self.hero_group = hero_group
+        self.damage = 5
+
+        self.moving = True
+
+    def updater(self, direction_x, direction_y):
+
+        try:
+            if not self.facing:
+                self.image = pygame.transform.flip(self.animation_list[self.action][self.frame_index], True, False) # смена кадров анимации
+                self.image.set_colorkey(BLACK)
+            else:
+                self.image = self.animation_list[self.action][self.frame_index]
+                self.image.set_colorkey(BLACK)
+            if pygame.time.get_ticks() - self.update_time >= self.animation_cooldown:
+                self.update_time = pygame.time.get_ticks()
+                self.frame_index += 1
+                if self.frame_index >= len(self.animation_list[self.action]):
+                    self.frame_index = 0
+                    if self.action == 2:
+                        self.kill()
+                        for i in range(len(self.enemy_lst)):
+                            if id(self) == id(self.enemy_lst[i]):
+                                del self.enemy_lst[i]
+                                break
+        except:
+            self.frame_index = 0
+
+        if self.action != 2 and self.moving and ((self.rect.x - direction_x) ** 2 + (self.rect.y - direction_y) ** 2) ** 0.5 <= 640:  # движение врагов
+            x_diff = direction_x - self.rect.x
+            y_diff = direction_y - self.rect.y
+
+            self.angle = math.atan2(y_diff, x_diff)
+            self.change_x = math.cos(self.angle) * self.vel
+            self.change_y = math.sin(self.angle) * self.vel
+            self.float_y += self.change_y
+            self.float_x += self.change_x
+            self.rect.x = self.float_x
+            self.rect.y = self.float_y
+            if direction_x > self.rect.x:
+                self.facing = True
+            else:
+                self.facing = False
+            if self.action != 1:
+                self.action = 0
+
+        if self.hp <= 0:
+            self.action = 2
+
+        if pygame.sprite.spritecollide(self, self.hero_group, False):
+            self.action = 1
+            for i in self.hero_group:
+                i.take_damage(self.damage)
+                self.hp += 2.5
+
 
 
 
@@ -222,3 +299,21 @@ gladiator_list.append(idle_gladiator)
 gladiator_list.append(walk_gladiator)
 gladiator_list.append(die_gladiator)
 gladiator_list.append(attack_gladiator)
+
+bat_list = []
+
+sprite_sheet_idle = pygame.image.load('sprites/bat.png').convert_alpha()
+bat_fly = spritesheet.Spritesheet(sprite_sheet_idle)
+bat_fly = spritesheet.get_animation(bat_fly, 16, 24, BLACK, 5, 4, 1)
+
+sprite_sheet_idle = pygame.image.load('sprites/bat.png').convert_alpha()
+bat_attack = spritesheet.Spritesheet(sprite_sheet_idle)
+bat_attack = spritesheet.get_animation(bat_attack, 16, 24, BLACK, 5, 4, 0)
+
+sprite_sheet_idle = pygame.image.load('sprites/bat.png').convert_alpha()
+bat_die = spritesheet.Spritesheet(sprite_sheet_idle)
+bat_die = spritesheet.get_animation(bat_die, 16, 24, BLACK, 5, 4, 2)
+
+bat_list.append(bat_fly)
+bat_list.append(bat_attack)
+bat_list.append(bat_die)
