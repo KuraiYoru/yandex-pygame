@@ -72,32 +72,34 @@ class Map:
                 for j in range(leaf.y + leaf.roomPos[1] + 1, leaf.y + leaf.roomPos[1] + leaf.roomSize[1]):
                     self.map[i][j] = '.'
 
-        f = True
-        for i in range(self.map.__len__()):
-            for j in range(self.map[i].__len__()):
-                if self.map[i][j] == '.' and self.map[i + 1][j] == '.' and self.map[i - 1][j] == '.' \
-                        and self.map[i][j - 1] == '.' and self.map[i + 1][j - 1] == '.' and self.map[i - 1][
-                    j - 1] == '.' and \
-                        self.map[i + 1][j + 1] == '.' and self.map[i - 1][j + 1] == '.' and self.map[i][j + 1] == '.' \
-                        and self.map[i][j - 2] == '.' and self.map[i][j - 3] == '.' \
-                        and self.map[i][j + 2] == '.' and self.map[i][j + 3] == '.' \
-                        and self.map[i - 2][j] == '.' and self.map[i - 3][j] == '.' \
-                        and self.map[i + 2][j] == '.' and self.map[i + 3][j] == '.':
-                    self.map[i][j] = 'p'
-                    f = False
-                    break
-            if not f:
-                break
+        # f = True
+        # for i in range(self.map.__len__()):
+        #     for j in range(self.map[i].__len__()):
+        #         if self.map[i][j] == '.' and self.map[i + 1][j] == '.' and self.map[i - 1][j] == '.' \
+        #                 and self.map[i][j - 1] == '.' and self.map[i + 1][j - 1] == '.' and self.map[i - 1][
+        #             j - 1] == '.' and \
+        #                 self.map[i + 1][j + 1] == '.' and self.map[i - 1][j + 1] == '.' and self.map[i][j + 1] == '.' \
+        #                 and self.map[i][j - 2] == '.' and self.map[i][j - 3] == '.' \
+        #                 and self.map[i][j + 2] == '.' and self.map[i][j + 3] == '.' \
+        #                 and self.map[i - 2][j] == '.' and self.map[i - 3][j] == '.' \
+        #                 and self.map[i + 2][j] == '.' and self.map[i + 3][j] == '.':
+        #             self.map[i][j] = 'p'
+        #             f = False
+        #             break
+        #     if not f:
+        #         break
+        x, y = give_mob_coords(self.map, 4)
+        self.map[x][y] = 'p'
 
-        # for i in range(3):
-        #     x, y = give_mob_coords(self.map, 1)
-        #     self.map[x][y] = '1'
-        #
+        for i in range(3):
+            x, y = give_mob_coords(self.map, 1)
+            self.map[x][y] = '1'
+
         # for i in range(2):
         #     x, y = give_mob_coords(self.map, 2)
         #     self.map[x][y] = '2'
 
-        x, y = give_mob_coords(self.map, 3)
+        x, y = give_mob_coords(self.map, 6)
         self.map[x][y] = '3'
 
         with open('map.txt', 'w') as file:

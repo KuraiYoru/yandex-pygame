@@ -33,6 +33,7 @@ class Hero(pygame.sprite.Sprite):
         self.damage = 10
         self.hp = 100
         self.max_hp = 100
+        self.collision_time = 500
 
 
     def update(self):
@@ -98,6 +99,11 @@ class Hero(pygame.sprite.Sprite):
                                 self.aim.rect.y + self.help_y + self.aim.rect.y * 0.02, fire_bullet, 90)
         group_of_sprite.add(bullet)
         bullets_sprite.add(bullet)
+
+    def take_damage(self, damage):
+        if pygame.time.get_ticks() - self.collision_time > 500:  # The time is in ms.
+            self.hp -= damage
+            self.collision_time = pygame.time.get_ticks()
 
 
 

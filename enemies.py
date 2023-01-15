@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 import spritesheet
 import math
@@ -35,24 +37,27 @@ class Enemy(pygame.sprite.Sprite):
 
 
     def updater(self, direction_x, direction_y):
-
-        if not self.facing:
-            self.image = pygame.transform.flip(self.animation_list[self.action][self.frame_index], True, False) # смена кадров анимации
-            self.image.set_colorkey(BLACK)
-        else:
-            self.image = self.animation_list[self.action][self.frame_index]
-            self.image.set_colorkey(BLACK)
-        if pygame.time.get_ticks() - self.update_time >= self.animation_cooldown:
-            self.update_time = pygame.time.get_ticks()
-            self.frame_index += 1
-            if self.frame_index >= len(self.animation_list[self.action]):
-                self.frame_index = 0
-                if self.action == 2:
-                    self.kill()
-                    for i in range(len(self.enemy_lst)):
-                        if id(self) == id(self.enemy_lst[i]):
-                            del self.enemy_lst[i]
-                            break
+        try:
+            if not self.facing:
+                self.image = pygame.transform.flip(self.animation_list[self.action][self.frame_index], True, False) # смена кадров анимации
+                self.image.set_colorkey(BLACK)
+            else:
+                self.image = self.animation_list[self.action][self.frame_index]
+                self.image.set_colorkey(BLACK)
+            if pygame.time.get_ticks() - self.update_time >= self.animation_cooldown:
+                self.update_time = pygame.time.get_ticks()
+                self.frame_index += 1
+                if self.frame_index >= len(self.animation_list[self.action]):
+                    self.frame_index = 0
+                    if self.action == 2:
+                        self.kill()
+                        for i in range(len(self.enemy_lst)):
+                            if id(self) == id(self.enemy_lst[i]):
+                                del self.enemy_lst[i]
+                                break
+        except:
+            self.frame_index = 0
+            print('Error!')
 
         if self.action != 2 and self.moving:  # движение врагов
             x_diff = direction_x - self.rect.x
@@ -61,16 +66,16 @@ class Enemy(pygame.sprite.Sprite):
             self.angle = math.atan2(y_diff, x_diff)
             self.change_x = math.cos(self.angle) * self.vel
             self.change_y = math.sin(self.angle) * self.vel
-
-            self.float_y += self.vel * int(self.change_y)
-            self.float_x += self.vel * int(self.change_x)
-            prevx = self.rect.x
-            prevy = self.rect.y
+            prevx = self.float_x
+            prevy = self.float_y
+            self.float_y += int(self.change_y)
+            self.float_x += int(self.change_x)
             self.rect.x = int(self.float_x)
             self.rect.y = int(self.float_y)
             if pygame.sprite.spritecollide(self, self.tiles, False):
-                self.rect.x = prevx
-                self.rect.y = prevy
+                print(1)
+                self.rect.x = int(prevx - 100*self.change_x)
+                self.rect.y = int(prevy - 100*self.change_y)
             if direction_x > self.rect.x:
                 self.facing = True
             else:
@@ -95,6 +100,7 @@ class Golem(Enemy):
         self.bullets = bullets
         self.shoot_time = pygame.time.get_ticks()
         self.shooting = False
+        self.action = 1
 
 
         self.flag = False
@@ -116,6 +122,7 @@ class Golem(Enemy):
             self.shooting = False
             self.moving = True
             self.frame_index = 0
+            self.action = 1
 
 
     def shoot(self, vel, direction_x, direction_y, sprite_list, bullets_type): # функция стрельбы
@@ -126,6 +133,36 @@ class Golem(Enemy):
         self.all_sprites.add(bullet)
         bullets_type.add(bullet)
         return bullet
+
+
+class Gladiator(Enemy):
+
+    def __init__(self, x, y, vel, enemies, enemy_lst, all_sprites, tiles, hero_group):
+        super().__init__(x, y, vel, enemies, enemy_lst, all_sprites, tiles)
+
+        self.action = 0  # 0-idle 1-going 2-dying 3-defending 4-shoot
+        self.animation_list = gladiator_list
+        self.image = self.animation_list[self.action][self.frame_index]
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.animation_cooldown = 150
+        self.hero_group = hero_group
+        self.damage = 15
+
+    def updater(self, direction_x, direction_y):
+        super().updater(direction_x, direction_y)
+        if ((self.rect.x - direction_x) ** 2 + (self.rect.y - direction_y) ** 2) ** 0.5 <= 20:
+            self.action = 3
+            self.moving = False
+        if self.action == 3 and 1 <= self.frame_index <= 3 and pygame.sprite.spritecollide(self, self.hero_group, False):
+            for i in self.hero_group:
+                i.take_damage(self.damage)
+        if self.action == 3 and self.frame_index == 6:
+            self.frame_index = 0
+            self.moving = True
+            self.action = 1
+
+
 
 
 sprite_sheet_idle1 = pygame.image.load('sprites/gladiator.png').convert_alpha()
@@ -153,17 +190,31 @@ sprite_sheet_idle = pygame.image.load('sprites/GolemArm.png').convert_alpha()
 shoot = spritesheet.Spritesheet(sprite_sheet_idle)
 shoot_list1 = spritesheet.get_animation(shoot, 35, 14, BLACK, 6, 6, 0)
 
-sprite_sheet_idle = pygame.image.load('sprites/Shoot1.png').convert_alpha()
-laser = spritesheet.Spritesheet(sprite_sheet_idle)
-laser_start = spritesheet.get_animation(laser, 36, 39, BLACK, 8, 3, 0)
-
-sprite_sheet_idle = pygame.image.load('sprites/Shoot2.png').convert_alpha()
-laser_go = spritesheet.Spritesheet(sprite_sheet_idle)
-laser_strike = spritesheet.get_animation(laser_go, 272, 48, (255, 255, 255), 6, 4, 0)
-
 golem_lst = []  # добавление всей анимации
 golem_lst.append(idle_list)
-golem_lst.append(idle_list)
+golem_lst.append(defence_list)
 golem_lst.append(die_list)
 golem_lst.append(defence_list)
 golem_lst.append(shoot_list)
+
+gladiator_list = []
+sprite_sheet_idle = pygame.image.load('sprites/gladiator.png').convert_alpha()
+idle_gladiator = spritesheet.Spritesheet(sprite_sheet_idle)
+idle_gladiator = spritesheet.get_animation(idle_gladiator, 32, 32, BLACK, 5, 4, 0)
+
+sprite_sheet_idle = pygame.image.load('sprites/gladiator.png').convert_alpha()
+walk_gladiator = spritesheet.Spritesheet(sprite_sheet_idle)
+walk_gladiator = spritesheet.get_animation(walk_gladiator, 32, 32, BLACK, 8, 4, 1)
+
+sprite_sheet_idle = pygame.image.load('sprites/gladiator.png').convert_alpha()
+die_gladiator = spritesheet.Spritesheet(sprite_sheet_idle)
+die_gladiator = spritesheet.get_animation(die_gladiator, 32, 32, BLACK, 8, 4, 4)
+
+sprite_sheet_idle = pygame.image.load('sprites/gladiator.png').convert_alpha()
+attack_gladiator = spritesheet.Spritesheet(sprite_sheet_idle)
+attack_gladiator = spritesheet.get_animation(attack_gladiator, 32, 32, BLACK, 7, 4, 2)
+
+gladiator_list.append(idle_gladiator)
+gladiator_list.append(walk_gladiator)
+gladiator_list.append(die_gladiator)
+gladiator_list.append(attack_gladiator)

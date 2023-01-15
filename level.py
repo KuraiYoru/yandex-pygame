@@ -4,7 +4,7 @@ from settings import *
 from tile import Tile
 from hero import Hero, Aim
 from helth_bar import Bar
-from enemies import Enemy, Golem
+from enemies import Golem, Gladiator
 
 
 class Level:
@@ -20,6 +20,7 @@ class Level:
         self.tiles = pygame.sprite.Group() # группа блоков
         self.earth = Earth()
         self.earth.rect.x = 100
+        self.WORLDMAP = creation_map()
         self.earth.rect.y = 100
         self.enemies = pygame.sprite.Group() # группа врагов
         self.enemies_lst = []
@@ -27,6 +28,7 @@ class Level:
         self.golem_bullets = pygame.sprite.Group()#  группа вражеских пуль
         self.create_map()
         self.screen = screen
+
 
     def run(self):
         self.visible_sprites.update()
@@ -52,7 +54,7 @@ class Level:
 
     def create_map(self):
         self.visible_sprites.add(self.earth)
-        for row_index, row in enumerate(WORLD_MAP):
+        for row_index, row in enumerate(self.WORLDMAP):
             for col_index, col in enumerate(row):
                 x = col_index * TILESIZE
                 y = row_index * TILESIZE
@@ -74,8 +76,10 @@ class Level:
                     self.visible_sprites.add(self.hero)
                     self.bar = Bar(self.hero)
                     self.hero_group.add(self.hero)
-                elif col.isdigit(): # создание врага
+                elif col == '3': # создание врага
                     self.enemy = Golem(x + 100, y + 100, 1.5, self.enemies, self.enemies_lst, self.visible_sprites, self.golem_bullets, self.tiles)
+                elif col == '1':
+                    self.enemy = Gladiator(x + 100, y + 100, 2.5, self.enemies, self.enemies_lst, self.visible_sprites, self.tiles, self.hero_group)
 
 
 class Camera(pygame.sprite.Group):
@@ -107,4 +111,4 @@ class Earth(pygame.sprite.Sprite): # спрайт земли
         super().__init__()
         self.image = pygame.image.load('sprites/earth.jpg').convert_alpha()
         self.rect = self.image.get_rect()
-        self.image = pygame.transform.scale(self.image, (len(WORLD_MAP[0]) * TILESIZE, len(WORLD_MAP) * TILESIZE))
+        self.image = pygame.transform.scale(self.image, (x * TILESIZE, y * TILESIZE))
