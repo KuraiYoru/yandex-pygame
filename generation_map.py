@@ -3,20 +3,26 @@ import sys
 
 
 def give_mob_coords(game_map: list, mob_size: int) -> tuple:
-    while True:
+    possible_places: list = []
+    for i in range(len(game_map)):
+        for j in range(len(game_map[0])):
+            if game_map[i][j] == '.' and mob_size <= i <= len(game_map) and mob_size <= j <= len(game_map[0]):
+                possible_places.append((i, j))
+    while len(possible_places) > 0:
         continue_condition = False
-        x, y = random.randint(mob_size, len(game_map) - mob_size - 1), random.randint(mob_size,
-                                                                                      len(game_map) - mob_size - 1)
-        if game_map[x][y] == '.':
-            for i in range(-mob_size, mob_size + 1, 1):
-                for j in range(-mob_size, mob_size + 1, 1):
-                    if game_map[x + i][y + j] != '.':
-                        continue_condition = True
-                        break
-                if continue_condition:
+        x, y = random.choice(possible_places)
+        possible_places.pop(possible_places.index((x, y)))
+        for i in range(-mob_size, mob_size + 1, 1):
+            for j in range(-mob_size, mob_size + 1, 1):
+                if game_map[x + i][y + j] != '.':
+                    continue_condition = True
                     break
-            if not continue_condition:
-                return (x, y)
+            if continue_condition:
+                break
+        if not continue_condition:
+            return (x, y)
+    print('Unsuccessfull placement')
+    return (-1, -1)
 
 
 class Pair:
@@ -51,55 +57,48 @@ class Map:
 
         for leaf in self.leafs:
             if leaf.halls.__len__() > 0:
-                for i in range(leaf.halls[0][0], leaf.halls[0][0] + leaf.halls[0][2]):
-                    for j in range(leaf.halls[0][1], leaf.halls[0][1] + leaf.halls[0][3]):
-                        try:
-                            self.map[i][j] = '.'
-                        except IndexError:
-                            print(i, j, 'len > 0')
-                            sys.exit()
+                for i in range(leaf.halls[0][0], leaf.halls[0][0] + leaf.halls[0][2] - 1):
+                    for j in range(leaf.halls[0][1], leaf.halls[0][1] + leaf.halls[0][3] - 1):
+                        self.map[i][j] = '.'
                 if leaf.halls.__len__() == 2:
-                    for i in range(leaf.halls[1][0], leaf.halls[1][0] + leaf.halls[1][2]):
-                        for j in range(leaf.halls[1][1], leaf.halls[1][1] + leaf.halls[1][3]):
-                            try:
-                                self.map[i][j] = '.'
-                            except IndexError:
-                                print(i, j, 'len == 2')
-                                sys.exit()
+                    for i in range(leaf.halls[1][0], leaf.halls[1][0] + leaf.halls[1][2] - 1):
+                        for j in range(leaf.halls[1][1], leaf.halls[1][1] + leaf.halls[1][3] - 1):
+                            self.map[i][j] = '.'
             if leaf.rightChild is not None or leaf.leftChild is not None:
                 continue
             for i in range(leaf.x + leaf.roomPos[0] + 1, leaf.x + leaf.roomPos[0] + leaf.roomSize[0]):
                 for j in range(leaf.y + leaf.roomPos[1] + 1, leaf.y + leaf.roomPos[1] + leaf.roomSize[1]):
                     self.map[i][j] = '.'
 
-        # f = True
-        # for i in range(self.map.__len__()):
-        #     for j in range(self.map[i].__len__()):
-        #         if self.map[i][j] == '.' and self.map[i + 1][j] == '.' and self.map[i - 1][j] == '.' \
-        #                 and self.map[i][j - 1] == '.' and self.map[i + 1][j - 1] == '.' and self.map[i - 1][
-        #             j - 1] == '.' and \
-        #                 self.map[i + 1][j + 1] == '.' and self.map[i - 1][j + 1] == '.' and self.map[i][j + 1] == '.' \
-        #                 and self.map[i][j - 2] == '.' and self.map[i][j - 3] == '.' \
-        #                 and self.map[i][j + 2] == '.' and self.map[i][j + 3] == '.' \
-        #                 and self.map[i - 2][j] == '.' and self.map[i - 3][j] == '.' \
-        #                 and self.map[i + 2][j] == '.' and self.map[i + 3][j] == '.':
-        #             self.map[i][j] = 'p'
-        #             f = False
-        #             break
-        #     if not f:
-        #         break
-        x, y = give_mob_coords(self.map, 4)
+    def create_mobs(self):
+        while True:
+            x, y = give_mob_coords(self.map, 3)
+            if x != -1 and y != -1:
+                break
+            else:
+                return 0
+
         self.map[x][y] = 'p'
 
-        for i in range(3):
-            x, y = give_mob_coords(self.map, 1)
+        for i in range(1):
+            while True:
+                x, y = give_mob_coords(self.map, 1)
+                if x != -1 and y != -1:
+                    break
+                else:
+                    return 0
             self.map[x][y] = '1'
 
-        # for i in range(2):
-        #     x, y = give_mob_coords(self.map, 2)
-        #     self.map[x][y] = '2'
+        for i in range(2):
+            x, y = give_mob_coords(self.map, 2)
+            self.map[x][y] = '2'
 
-        x, y = give_mob_coords(self.map, 6)
+        while True:
+            x, y = give_mob_coords(self.map, 6)
+            if x != -1 and y != -1:
+                break
+            else:
+                return 0
         self.map[x][y] = '3'
 
         with open('map.txt', 'w') as file:
@@ -108,7 +107,7 @@ class Map:
 
         # for i in self.map:
         #     print(''.join(i))
-
+        return self.map
 
 class Leaf:
     def __init__(self, x: int, y: int, width: int, height: int):

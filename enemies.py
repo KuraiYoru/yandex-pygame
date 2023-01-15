@@ -57,30 +57,30 @@ class Enemy(pygame.sprite.Sprite):
                                 break
         except:
             self.frame_index = 0
-            print('Error!')
 
-        if self.action != 2 and self.moving:  # движение врагов
+        if self.action != 2 and self.moving and ((self.rect.x - direction_x) ** 2 + (self.rect.y - direction_y) ** 2) ** 0.5 <= 640:  # движение врагов
             x_diff = direction_x - self.rect.x
             y_diff = direction_y - self.rect.y
 
             self.angle = math.atan2(y_diff, x_diff)
             self.change_x = math.cos(self.angle) * self.vel
             self.change_y = math.sin(self.angle) * self.vel
-            prevx = self.float_x
-            prevy = self.float_y
-            self.float_y += int(self.change_y)
-            self.float_x += int(self.change_x)
-            self.rect.x = int(self.float_x)
-            self.rect.y = int(self.float_y)
+            prevx = self.rect.x
+            prevy = self.rect.y
+            self.float_y += self.change_y
+            self.float_x += self.change_x
+            self.rect.x = self.float_x
+            self.rect.y = self.float_y
             if pygame.sprite.spritecollide(self, self.tiles, False):
-                print(1)
-                self.rect.x = int(prevx - 100*self.change_x)
-                self.rect.y = int(prevy - 100*self.change_y)
+                self.rect.x = prevx
+                self.rect.y = prevy
             if direction_x > self.rect.x:
                 self.facing = True
             else:
                 self.facing = False
             self.action = 1
+        else:
+            self.action = 0
 
 
         if self.hp <= 0:
@@ -151,16 +151,20 @@ class Gladiator(Enemy):
 
     def updater(self, direction_x, direction_y):
         super().updater(direction_x, direction_y)
-        if ((self.rect.x - direction_x) ** 2 + (self.rect.y - direction_y) ** 2) ** 0.5 <= 20:
+        print(self.moving)
+        if pygame.sprite.spritecollide(self, self.hero_group, False):
             self.action = 3
             self.moving = False
-        if self.action == 3 and 1 <= self.frame_index <= 3 and pygame.sprite.spritecollide(self, self.hero_group, False):
+        if self.action == 3 and 3 <= self.frame_index <= 5 and pygame.sprite.spritecollide(self, self.hero_group, False):
             for i in self.hero_group:
                 i.take_damage(self.damage)
-        if self.action == 3 and self.frame_index == 6:
+        if self.action == 3 and self.frame_index >= 6:
             self.frame_index = 0
             self.moving = True
             self.action = 1
+        if self.action != 3:
+            self.moving = True
+
 
 
 

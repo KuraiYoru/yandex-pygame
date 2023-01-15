@@ -79,7 +79,7 @@ class Level:
                 elif col == '3': # создание врага
                     self.enemy = Golem(x + 100, y + 100, 1.5, self.enemies, self.enemies_lst, self.visible_sprites, self.golem_bullets, self.tiles)
                 elif col == '1':
-                    self.enemy = Gladiator(x + 100, y + 100, 2.5, self.enemies, self.enemies_lst, self.visible_sprites, self.tiles, self.hero_group)
+                    self.enemy = Gladiator(x + 100, y + 100, 4, self.enemies, self.enemies_lst, self.visible_sprites, self.tiles, self.hero_group)
 
 
 class Camera(pygame.sprite.Group):

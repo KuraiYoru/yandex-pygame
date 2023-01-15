@@ -86,12 +86,14 @@ class Game:
                                                        text_w + 20, text_h + 20), 5)
                 pygame.display.flip()
 
-    def run_menu(self):
-        pass
 
 def start(condition):
+
     game = Game()
     menu = Menu(game.run, game.screen, condition)
+
+
+
 
 if __name__ == "__main__":
     start("")
