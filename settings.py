@@ -2,7 +2,7 @@ import ctypes
 from generation_map import Map
 
 try:
-    WIDTH, HEIGHT = tuple(map(lambda x: ctypes.windll.user32.GetSystemMetrics(x) // 1.5, (0, 1))) # размер экрана
+    WIDTH, HEIGHT = tuple(map(lambda x: ctypes.windll.user32.GetSystemMetrics(x), (0, 1))) # размер экрана
 except:
     WIDTH, HEIGHT = list(map(lambda x: int(x), input("Введите размер экрана в формате **** ****. Example 1920 1080").split()))
 FPS = 60
@@ -22,6 +22,4 @@ def creation_map():
             WORLD_MAP[j][0] = 'x'
             WORLD_MAP[j][-1] = 'x'
         return WORLD_MAP
-
-
 
