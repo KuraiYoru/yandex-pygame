@@ -111,9 +111,6 @@ def start(condition):
     menu = Menu(game.run, game.screen, condition)
 
 
-
-
-
 if __name__ == "__main__":
     start("")
 
