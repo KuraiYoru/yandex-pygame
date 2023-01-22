@@ -16,8 +16,13 @@ class Game:
         pygame.mixer.init()
         mixer.init()
         mixer.music.load('music/song18.mp3')
-        mixer.music.set_volume(0.3)
-        mixer.music.play(-1)
+        self.sound1 = pygame.mixer.Sound('music/song18.mp3')
+        self.sound_win = pygame.mixer.Sound('music/win.mp3')
+        self.sound_loose = pygame.mixer.Sound('music/game_over.mp3')
+
+        self.sound1.set_volume(0.3)
+        self.game_run = False
+
 
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -40,10 +45,17 @@ class Game:
         i = 0
         paused = False
         pygame.mouse.set_visible(False)
+        self.game_run = True
+        melody = mixer.Sound('music/stranger-things-124008.mp3')
+        melody.set_volume(0.2)
+        melody.play(-1)
 
         while True:
+            self.sound1.stop()
             if len(self.enemies) == 0:
                 start("You win!")
+                melody.stop()
+                # self.sound1.stop()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -58,6 +70,8 @@ class Game:
 
             if self.level.hero.hp <= 0:
                 start("You lose!")
+                melody.stop()
+                # self.sound1.stop()
 
             if not paused:
                 self.clock.tick(FPS)
@@ -87,10 +101,21 @@ class Game:
 
 
 def start(condition):
-
     game = Game()
+    game.sound1.play(-1)
+    if condition == "You win!":
+        game.sound_win.play(1)
+    elif condition == "You lose!":
+        game.sound_loose.play(1)
+
     menu = Menu(game.run, game.screen, condition)
+
+
+
 
 
 if __name__ == "__main__":
     start("")
+
+
+

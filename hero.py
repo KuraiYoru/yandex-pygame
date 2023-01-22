@@ -2,9 +2,12 @@ import pygame
 from settings import *
 import spritesheet
 from projectile import Projectile
+from pygame import mixer
 
 BLACK = (0, 0, 0)
 pygame.init()
+pygame.mixer.init()
+mixer.init()
 
 class Hero(pygame.sprite.Sprite):
     def __init__(self, speedx, speedy, facing, all_sprites, bullets, tiles, x, y, aim): # скорость по иксу, скорость по игрику, направление спрайта (лево право), все спрайты отрисовки, группа пуль, группа блоков, координаты, класс прицела
@@ -99,6 +102,8 @@ class Hero(pygame.sprite.Sprite):
                                 self.aim.rect.y + self.help_y + self.aim.rect.y * 0.02, fire_bullet, 90)
         group_of_sprite.add(bullet)
         bullets_sprite.add(bullet)
+        melody = pygame.mixer.Sound('music/Fireball-Magic-Attack-C-www.fesliyanstudios.com.mp3')
+        melody.play()
 
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.collision_time > 500:  # The time is in ms.

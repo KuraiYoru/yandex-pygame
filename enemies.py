@@ -1,12 +1,13 @@
 import pygame
 import spritesheet
 import math
-from settings import WIDTH, HEIGHT
 from projectile import Projectile
+from pygame import mixer
 
 BLACK = (0, 0, 0)
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+mixer.init()
+pygame.mixer.init()
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -30,7 +31,7 @@ class Enemy(pygame.sprite.Sprite):
         self.all_sprites = all_sprites
         self.all_sprites.add(self)
         self.tiles = tiles
-
+        self.name = ''
         self.moving = True
 
 
@@ -48,7 +49,12 @@ class Enemy(pygame.sprite.Sprite):
                 if self.frame_index >= len(self.animation_list[self.action]):
                     self.frame_index = 0
                     if self.action == 2:
+
                         self.kill()
+                        melody = pygame.mixer.Sound(self.name)
+                        melody.play()
+
+
                         for i in range(len(self.enemy_lst)):
                             if id(self) == id(self.enemy_lst[i]):
                                 del self.enemy_lst[i]
@@ -99,8 +105,8 @@ class Golem(Enemy):
         self.shoot_time = pygame.time.get_ticks()
         self.shooting = False
         self.action = 1
-
-
+        self.sound_take_damage = 'music/golem_take_damage.wav'
+        self.name = 'music/' + (str(self.__class__).split('.')[1][:-2] + '_die.mp3').lower()
         self.flag = False
         self.strike_laser = False
 
@@ -108,7 +114,8 @@ class Golem(Enemy):
         super().updater(direction_x, direction_y) # наследование движения и анимации
 
 
-        if pygame.time.get_ticks() - self.shoot_time >= 3000 and self.action != 2: # стрельба
+        if pygame.time.get_ticks() - self.shoot_time >= 3000 and self.action != 2 and \
+                ((self.rect.x - direction_x) ** 2 + (self.rect.y - direction_y) ** 2) ** 0.5 <= 640: # стрельба
             self.shooting = True
             self.moving = False
             self.shoot_time = pygame.time.get_ticks()
@@ -130,6 +137,8 @@ class Golem(Enemy):
             bullet = Projectile(vel, self.rect.x + self.rect.width, self.rect.y + self.rect.y * 0.1, direction_x, direction_y - self.rect.y * 0.1, sprite_list)
         self.all_sprites.add(bullet)
         bullets_type.add(bullet)
+        melody = pygame.mixer.Sound('music/golem_strike.wav')
+        melody.play()
         return bullet
 
 
@@ -146,6 +155,8 @@ class Gladiator(Enemy):
         self.animation_cooldown = 150
         self.hero_group = hero_group
         self.damage = 15
+        self.sound_take_damage = 'music/gladiator_take_damage.wav'
+        self.name = 'music/' + (str(self.__class__).split('.')[1][:-2] + '_die.mp3').lower()
 
     def updater(self, direction_x, direction_y):
         super().updater(direction_x, direction_y)
@@ -155,6 +166,8 @@ class Gladiator(Enemy):
         if self.action == 3 and 3 <= self.frame_index <= 5 and pygame.sprite.spritecollide(self, self.hero_group, False):
             for i in self.hero_group:
                 i.take_damage(self.damage)
+            melody = pygame.mixer.Sound('music/gladiator_attack.wav')
+            melody.play()
         if self.action == 3 and self.frame_index >= 6:
             self.frame_index = 0
             self.moving = True
@@ -187,6 +200,8 @@ class Bat(pygame.sprite.Sprite):
         self.animation_cooldown = 100
         self.hero_group = hero_group
         self.damage = 5
+        self.sound_take_damage = 'music/bat_take_damage.mp3'
+        self.name = 'music/' + (str(self.__class__).split('.')[1][:-2] + '_die.mp3').lower()
 
         self.moving = True
 
@@ -209,6 +224,9 @@ class Bat(pygame.sprite.Sprite):
                     self.frame_index = 0
                     if self.action == 2:
                         self.kill()
+                        melody = pygame.mixer.Sound(self.name)
+                        melody.play()
+
                         for i in range(len(self.enemy_lst)):
                             if id(self) == id(self.enemy_lst[i]):
                                 del self.enemy_lst[i]

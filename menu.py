@@ -1,6 +1,7 @@
 import pygame_menu
 from settings import *
 from PIL import ImageFont
+from pygame_menu import sound
 
 # ---------- создание меню с помощью библиотеки pygame-menu оно уже готово забей
 class Menu:
@@ -29,7 +30,6 @@ class Menu:
         about_theme.title_offset = (5, -2)
         about_theme.widget_offset = (0, 0.14)
 
-
         myimage = pygame_menu.baseimage.BaseImage(
             image_path='sprites/213.jpg',
             drawing_mode=pygame_menu.baseimage.IMAGE_MODE_FILL
@@ -47,9 +47,12 @@ class Menu:
         about_menu.add.button('Return to Menu', pygame_menu.events.BACK, margin=(0, 150))
         about_menu.add.label(f"Music from https://opengameart.org/")
 
-
         mytheme.background_color = myimage
         menu = pygame_menu.Menu(title, WIDTH, HEIGHT, theme=mytheme)
+        self.engine = sound.Sound()
+
+        self.engine.set_sound(sound.SOUND_TYPE_OPEN_MENU, 'music/song18.mp3')
+        menu.set_sound(self.engine, recursive=True)
 
         menu.add.label(value, font_color=(255, 255, 255)).set_margin(0, 20)
         menu.add.button('Play', func).set_margin(0, 20).resize(150, 75, False)

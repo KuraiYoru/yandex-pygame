@@ -5,6 +5,9 @@ from tile import Tile
 from hero import Hero, Aim
 from helth_bar import Bar
 from enemies import Golem, Gladiator, Bat
+from pygame import mixer
+pygame.mixer.init()
+
 
 
 class Level:
@@ -34,7 +37,9 @@ class Level:
         self.visible_sprites.update()
 
         # Destroy bullets-tiles
-        pygame.sprite.groupcollide(self.bullets, self.tiles, True, False)
+        if pygame.sprite.groupcollide(self.bullets, self.tiles, True, False):
+            melody =  mixer.Sound('music/Fire_Flame.mp3')
+            melody.play(0)
 
         pygame.sprite.groupcollide(self.golem_bullets, self.tiles, True, False)
 
@@ -43,7 +48,9 @@ class Level:
 
         for i in pygame.sprite.groupcollide(self.bullets, self.enemies, True, False).items(): # урон врагам
             i[1][0].hp -= self.hero.damage
-
+            mixer.music.load(i[1][0].sound_take_damage)
+            mixer.music.set_volume(0.8)
+            mixer.music.play(1)
 
         for i in self.enemies_lst:
             i.updater(self.hero.rect.x + self.hero.rect.width // 2, self.hero.rect.y + self.hero.rect.height // 2)
