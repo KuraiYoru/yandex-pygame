@@ -23,7 +23,7 @@ class Level:
         self.tiles = pygame.sprite.Group() # группа блоков
         self.earth = Earth()
         self.earth.rect.x = 100
-        self.WORLDMAP = creation_map()
+        self.WORLDMAP = game_map()
         self.earth.rect.y = 100
         self.enemies = pygame.sprite.Group() # группа врагов
         self.enemies_lst = []
@@ -123,6 +123,6 @@ class Camera(pygame.sprite.Group):
 class Earth(pygame.sprite.Sprite): # спрайт земли
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('sprites/earth.jpg').convert_alpha()
+        self.image = pygame.image.load('sprites/img.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.image = pygame.transform.scale(self.image, (x * TILESIZE, y * TILESIZE))

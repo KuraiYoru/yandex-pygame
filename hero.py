@@ -22,6 +22,9 @@ class Hero(pygame.sprite.Sprite):
         self.action = 0  # 0-idle, 1-walking
         self.image = self.animation_list[self.action][self.frame_index]
         self.rect = self.image.get_rect()
+        self.image = pygame.transform.scale(self.image,
+                                            (self.image.get_rect()[2] * 0.8, self.image.get_rect()[3] * 0.8))
+        self.rect = self.image.get_rect()
         self.last_coords = self.rect
         self.facing = 0  # 0 -right, 1-left
         self.shoot_time = pygame.time.get_ticks()
@@ -37,6 +40,7 @@ class Hero(pygame.sprite.Sprite):
         self.hp = 100
         self.max_hp = 100
         self.collision_time = 500
+
 
 
     def update(self):

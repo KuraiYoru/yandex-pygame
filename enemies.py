@@ -274,23 +274,23 @@ idle_1_list = spritesheet.get_animation(show_idle1, 32, 32, BLACK, 7, 4, 2)
 # Sprites for golem
 sprite_sheet_idle = pygame.image.load('sprites/Golem1.png').convert_alpha() # пример создания типа анимации бег, стрельба и тд
 show_idle = spritesheet.Spritesheet(sprite_sheet_idle)
-idle_list = spritesheet.get_animation(show_idle, 54, 50, BLACK, 4, 6, 0)
+idle_list = spritesheet.get_animation(show_idle, 54, 50, BLACK, 4, 4, 0)
 
 sprite_sheet_idle = pygame.image.load('sprites/Golem2.png').convert_alpha()
 defence = spritesheet.Spritesheet(sprite_sheet_idle)
-defence_list = spritesheet.get_animation(defence, 53, 48, BLACK, 8, 6, 0)
+defence_list = spritesheet.get_animation(defence, 53, 48, BLACK, 8, 4, 0)
 
 sprite_sheet_idle = pygame.image.load('sprites/Golem3.png').convert_alpha()
 die = spritesheet.Spritesheet(sprite_sheet_idle)
-die_list = spritesheet.get_animation(die, 60, 78, BLACK, 14, 6, 0)
+die_list = spritesheet.get_animation(die, 60, 78, BLACK, 14, 4, 0)
 
 sprite_sheet_idle = pygame.image.load('sprites/Golem4.png').convert_alpha()
 shoot = spritesheet.Spritesheet(sprite_sheet_idle)
-shoot_list = spritesheet.get_animation(shoot, 77, 49, BLACK, 9, 6, 0)
+shoot_list = spritesheet.get_animation(shoot, 77, 49, BLACK, 9, 4, 0)
 
 sprite_sheet_idle = pygame.image.load('sprites/GolemArm.png').convert_alpha()
 shoot = spritesheet.Spritesheet(sprite_sheet_idle)
-shoot_list1 = spritesheet.get_animation(shoot, 35, 14, BLACK, 6, 6, 0)
+shoot_list1 = spritesheet.get_animation(shoot, 35, 14, BLACK, 6, 4, 0)
 
 golem_lst = []  # добавление всей анимации
 golem_lst.append(idle_list)
